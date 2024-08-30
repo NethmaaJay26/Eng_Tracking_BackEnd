@@ -3,6 +3,7 @@ import cors from "cors";
 import { connectDB } from "./config/db.js";
 import userRouter from "./routes/userRoute.js";
 import router from "./routes/engineerRoutes.js";
+import sEngineerRouter from "./routes/SengineerRoutes.js";
 import 'dotenv/config';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -11,23 +12,24 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// app config
+// App config
 const app = express();
 const port = 4000;
 
-// connecting middleware
+// Connecting middleware
 app.use(express.json());
 app.use(cors());
 
-// establishing db connection
+// Establishing DB connection
 connectDB();
 
-// setting up static folder for uploads
+// Setting up static folder for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// setting up API endpoints
+// Setting up API endpoints
 app.use("/api/user", userRouter);
 app.use('/api/engineers', router);
+app.use('/api/sengineers', sEngineerRouter);
 
 app.get("/", (req, res) => {
     res.send("API Working");
