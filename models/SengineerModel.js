@@ -7,7 +7,7 @@ const sengineerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  supervisorID: {
+  traineeID: {
     type: String,
     required: true,
     unique: true,

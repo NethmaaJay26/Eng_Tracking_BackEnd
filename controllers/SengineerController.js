@@ -7,7 +7,7 @@ import { response } from "express";
 
 // Add a new supervising engineer
 const addSupervisingEngineer = async (req, res) => {
-  const { name, supervisorID, email, address, contact, password } = req.body;
+  const { name, traineeID, email, address, contact, password } = req.body;
   const photo = req.file ? req.file.filename : null;
 
   try {
@@ -17,7 +17,7 @@ const addSupervisingEngineer = async (req, res) => {
 
     const newSengineer = new Sengineer({
       name,
-      supervisorID,
+      traineeID,
       email,
       address,
       contact,

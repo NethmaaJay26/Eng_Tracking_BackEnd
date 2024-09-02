@@ -37,7 +37,8 @@ const engineerSchema = new mongoose.Schema({
   password: {
     type: String,
     required : true,
-  }
+  },
+
 });
 
 const Engineer = mongoose.model('Engineer', engineerSchema);
