@@ -4,9 +4,9 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getSupervisingEngineers, addSupervisingEngineer } from '../controllers/SengineerController.js'; // Update to match controller
+import { getSupervisingEngineers, addSupervisingEngineer, loginSengineer } from '../controllers/SengineerController.js'; // Update to match controller
 
-const router = express.Router();
+const sengineerrouter = express.Router();
 
 // Determine __dirname equivalent in ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -24,9 +24,11 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Route to get all supervising engineers
-router.get('/', getSupervisingEngineers); 
+sengineerrouter.get('/', getSupervisingEngineers); 
 
 // Route to add a new supervising engineer
-router.post('/add', upload.single('photo'), addSupervisingEngineer); 
+sengineerrouter.post('/add', upload.single('photo'), addSupervisingEngineer); 
 
-export default router;
+sengineerrouter.post("/login", loginSengineer);
+
+export default sengineerrouter;

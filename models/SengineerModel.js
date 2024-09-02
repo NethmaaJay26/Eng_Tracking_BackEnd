@@ -7,15 +7,10 @@ const sengineerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  traineeID: {
+  supervisorID: {
     type: String,
     required: true,
     unique: true,
-  },
-  role: {
-    type: String,
-    required: true,
-    default: 'Supervising Engineer', 
   },
   email: {
     type: String,
@@ -34,6 +29,10 @@ const sengineerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  password:{
+    type:String,
+    required:true,
+  }
 });
 
 const Sengineer = mongoose.model('Sengineer', sengineerSchema);

@@ -3,7 +3,7 @@ import cors from "cors";
 import { connectDB } from "./config/db.js";
 import userRouter from "./routes/userRoute.js";
 import router from "./routes/engineerRoutes.js";
-import sEngineerRouter from "./routes/SengineerRoutes.js";
+import sengineerrouter from "./routes/SengineerRoutes.js";
 import 'dotenv/config';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -29,7 +29,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Setting up API endpoints
 app.use("/api/user", userRouter);
 app.use('/api/engineers', router);
-app.use('/api/sengineers', sEngineerRouter);
+app.use('/api/sengineers', sengineerrouter);
 
 
 app.get("/", (req, res) => {
