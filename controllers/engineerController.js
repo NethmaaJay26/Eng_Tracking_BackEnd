@@ -56,6 +56,7 @@ const getEngineers = async (req, res) => {
   }
 };
 
+//get engineer by id
 const getEngineerById = async (req, res) => {
   try {
     const engineer = await Engineer.findById(req.params.id).populate('supervisingEngineer', 'name');
