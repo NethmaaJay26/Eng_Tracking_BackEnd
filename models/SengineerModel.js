@@ -32,7 +32,8 @@ const sengineerSchema = new mongoose.Schema({
   password:{
     type:String,
     required:true,
-  }
+  },
+
 });
 
 const Sengineer = mongoose.model('Sengineer', sengineerSchema);

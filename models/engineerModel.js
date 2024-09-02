@@ -39,6 +39,12 @@ const engineerSchema = new mongoose.Schema({
     required : true,
   },
 
+  supervisingEngineer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Sengineer', // Reference to the Supervising Engineer model
+    required: false, // This is optional; set to true if a supervising engineer is mandatory
+  }
+
 });
 
 const Engineer = mongoose.model('Engineer', engineerSchema);

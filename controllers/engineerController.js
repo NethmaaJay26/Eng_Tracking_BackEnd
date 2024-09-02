@@ -5,17 +5,24 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import validator from "validator"
 import { response } from "express";
+import Sengineer from '../models/SengineerModel.js';
 
 
 // Add a new engineer
 const addEngineer = async (req, res) => {
-  const { name, traineeID, role, email, address, contact, password } = req.body;
+  const { name, traineeID, role, email, address, contact, password, supervisingEngineer } = req.body;
   const photo = req.file ? req.file.filename : null;
 
   try {
     // Hash the password before saving
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Find the supervising engineer by ID
+    const supervisingEngineerDoc = await Sengineer.findById(supervisingEngineer);
+    if (!supervisingEngineerDoc) {
+      return res.status(400).json({ message: 'Supervising Engineer not found' });
+    }
 
     const newEngineer = new Engineer({
       name,
@@ -25,8 +32,9 @@ const addEngineer = async (req, res) => {
       address,
       contact,
       photo,
-      password: hashedPassword, // Save the hashed password
-    })
+      supervisingEngineer: supervisingEngineer, // Use ID directly
+      password: hashedPassword,
+    });
 
     const savedEngineer = await newEngineer.save();
     res.status(201).json(savedEngineer);
@@ -42,6 +50,19 @@ const getEngineers = async (req, res) => {
     const engineers = await Engineer.find();
     res.status(200).json(engineers);
     
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+const getEngineerById = async (req, res) => {
+  try {
+    const engineer = await Engineer.findById(req.params.id).populate('supervisingEngineer', 'name');
+    if (!engineer) {
+      return res.status(404).json({ message: 'Engineer not found' });
+    }
+    res.status(200).json(engineer);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: 'Server Error' });
@@ -103,4 +124,4 @@ const createToken = (id) => {
 };
 
 
-export { addEngineer, getEngineers, loginEngineer, updatePassword };
+export { addEngineer, getEngineers, loginEngineer, updatePassword, getEngineerById  };

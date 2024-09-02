@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { getEngineers, addEngineer, loginEngineer, updatePassword } from '../controllers/engineerController.js';
 import { authenticateUser } from '../middleware/authmiddleware.js';
+import { getEngineerById } from '../controllers/engineerController.js';
 
 
 const router = express.Router();
@@ -29,6 +30,8 @@ router.get('/', getEngineers);
 
 // Route to add a new engineer
 router.post('/add', upload.single('photo'), addEngineer);
+
+router.get('/:id', getEngineerById); // Add this line for fetching a specific engineer
 
 router.post("/login", loginEngineer);
 router.put("/updatePassword", authenticateUser, updatePassword);
