@@ -4,6 +4,7 @@ import { connectDB } from "./config/db.js";
 import userRouter from "./routes/userRoute.js";
 import router from "./routes/engineerRoutes.js";
 import sengineerrouter from "./routes/SengineerRoutes.js";
+import trainingrouter from "./routes/trainingRoutes.js";
 import 'dotenv/config';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -30,6 +31,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use("/api/user", userRouter);
 app.use('/api/engineers', router);
 app.use('/api/sengineers', sengineerrouter);
+app.use('/api/trainings', trainingrouter);
 
 
 app.get("/", (req, res) => {
