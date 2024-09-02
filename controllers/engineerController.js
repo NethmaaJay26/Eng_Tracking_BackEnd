@@ -119,10 +119,38 @@ const updatePassword = async (req, res) => {
   }
 };
 
+// Update engineer
+const updateEngineer = async (req, res) => {
+  const { name, traineeID, role, email, address, contact, supervisingEngineer } = req.body;
+  const photo = req.file ? req.file.filename : null;
+
+  try {
+    const updatedData = {
+      name,
+      traineeID,
+      role,
+      email,
+      address,
+      contact,
+      supervisingEngineer,
+      photo
+    };
+
+    const updatedEngineer = await Engineer.findByIdAndUpdate(req.params.id, updatedData, { new: true });
+    if (!updatedEngineer) {
+      return res.status(404).json({ message: 'Engineer not found' });
+    }
+    res.status(200).json(updatedEngineer);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 
 const createToken = (id) => {
   return jwt.sign({id}, process.env.JWT_SECRET)
 };
 
 
-export { addEngineer, getEngineers, loginEngineer, updatePassword, getEngineerById  };
+export { addEngineer, getEngineers, loginEngineer, updatePassword, getEngineerById , updateEngineer  };
