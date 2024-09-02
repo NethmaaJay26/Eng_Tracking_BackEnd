@@ -1,10 +1,11 @@
 // routes/engineerRoutes.js
-
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getEngineers, addEngineer } from '../controllers/engineerController.js';
+import { getEngineers, addEngineer, loginEngineer, updatePassword } from '../controllers/engineerController.js';
+import { authenticateUser } from '../middleware/authmiddleware.js';
+
 
 const router = express.Router();
 
@@ -28,5 +29,8 @@ router.get('/', getEngineers);
 
 // Route to add a new engineer
 router.post('/add', upload.single('photo'), addEngineer);
+
+router.post("/login", loginEngineer);
+router.put("/updatePassword", authenticateUser, updatePassword);
 
 export default router;

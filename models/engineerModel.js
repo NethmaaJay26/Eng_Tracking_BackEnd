@@ -2,6 +2,7 @@
 
 import mongoose from 'mongoose';
 
+
 const engineerSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -32,6 +33,11 @@ const engineerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
+  password: {
+    type: String,
+    required : true,
+  }
 });
 
 const Engineer = mongoose.model('Engineer', engineerSchema);

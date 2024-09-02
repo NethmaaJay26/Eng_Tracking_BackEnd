@@ -1,14 +1,22 @@
 // controllers/engineerController.js
 
 import Engineer from '../models/engineerModel.js';
+import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt"
+import validator from "validator"
+import { response } from "express";
 
 
 // Add a new engineer
 const addEngineer = async (req, res) => {
-  const { name, traineeID, role, email, address, contact } = req.body;
+  const { name, traineeID, role, email, address, contact, password } = req.body;
   const photo = req.file ? req.file.filename : null;
 
   try {
+    // Hash the password before saving
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const newEngineer = new Engineer({
       name,
       traineeID,
@@ -17,7 +25,8 @@ const addEngineer = async (req, res) => {
       address,
       contact,
       photo,
-    });
+      password: hashedPassword, // Save the hashed password
+    })
 
     const savedEngineer = await newEngineer.save();
     res.status(201).json(savedEngineer);
@@ -39,4 +48,59 @@ const getEngineers = async (req, res) => {
   }
 };
 
-export { addEngineer, getEngineers };
+
+// login Engineer
+const loginEngineer = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const engineer = await Engineer.findOne({ email });
+    if (!engineer) {
+      return res.json({ success: false, message: "User Does not Exist" });
+    }
+
+    const isMatch = await bcrypt.compare(password, engineer.password);
+
+    if (!isMatch) {
+      return res.json({ success: false, message: "Invalid Password" });
+    }
+
+    const token = createToken(engineer._id);
+    res.json({
+      success: true,
+      token,
+      name: engineer.name,
+      address: engineer.address,
+      password: engineer.password,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
+
+
+// Update password
+const updatePassword = async (req, res) => {
+  const { password } = req.body;
+  const userId = req.user._id; // Assuming user ID is retrieved from the token
+
+  try {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      await Engineer.findByIdAndUpdate(userId, { password: hashedPassword });
+
+      res.status(200).json({ message: 'Password updated successfully' });
+  } catch (err) {
+      console.error(err.message);
+      res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+
+const createToken = (id) => {
+  return jwt.sign({id}, process.env.JWT_SECRET)
+};
+
+
+export { addEngineer, getEngineers, loginEngineer, updatePassword };
