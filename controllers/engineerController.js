@@ -1,4 +1,5 @@
 // controllers/engineerController.js
+import mongoose from 'mongoose'; // Add this import statement
 
 import Engineer from '../models/engineerModel.js';
 import jwt from "jsonwebtoken"
@@ -70,6 +71,19 @@ const getEngineerById = async (req, res) => {
   }
 };
 
+
+//delete engineer by id
+const deletebyId =  async (req, res) => {
+  try {
+    const engineer = await Engineer.findByIdAndDelete(req.params.id);
+    if (!engineer) {
+      return res.status(404).json({ message: 'Engineer not found' });
+    }
+    res.status(200).json({ message: 'Engineer deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting engineer', error });
+  }
+};
 
 // login Engineer
 const loginEngineer = async (req, res) => {
@@ -153,4 +167,34 @@ const createToken = (id) => {
 };
 
 
-export { addEngineer, getEngineers, loginEngineer, updatePassword, getEngineerById , updateEngineer  };
+const getAssignedEngineers = async (req, res) => {
+  const supervisorId = req.params.supervisorId;
+
+  // Check if supervisorId is provided and valid
+  if (!supervisorId) {
+    return res.status(400).json({ message: 'Supervisor ID is required' });
+  }
+  
+  if (!mongoose.Types.ObjectId.isValid(supervisorId)) {
+    return res.status(400).json({ message: 'Invalid supervisor ID' });
+  }
+
+  try {
+    // Find engineers assigned to the given supervisor
+    const engineers = await Engineer.find({ supervisingEngineer: supervisorId });
+
+    if (engineers.length === 0) {
+      return res.status(404).json({ message: 'No engineers found for the specified supervisor' });
+    }
+
+    res.status(200).json(engineers);
+  } catch (error) {
+    console.error('Error fetching assigned engineers:', error);
+    res.status(500).json({ message: 'Error fetching assigned engineers', error });
+  }
+};
+
+
+
+
+export { addEngineer, getEngineers, loginEngineer, updatePassword, getEngineerById , updateEngineer, deletebyId, getAssignedEngineers  };

@@ -64,9 +64,8 @@ const loginSengineer = async (req, res) => {
     res.json({
       success: true,
       token,
-      name: sengineer.name,
-      address: sengineer.address,
-      password: sengineer.password,
+      name: sengineer.name, // You might want to check if 'name' is appropriate
+      _id: sengineer._id // Include _id in the response
     });
   } catch (error) {
     console.log(error);
@@ -75,8 +74,9 @@ const loginSengineer = async (req, res) => {
 };
 
 const createToken = (id) => {
-  return jwt.sign({id}, process.env.JWT_SECRET)
+  return jwt.sign({ id }, process.env.JWT_SECRET);
 };
+
 
 
 export { addSupervisingEngineer, getSupervisingEngineers, loginSengineer };

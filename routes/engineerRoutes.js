@@ -3,7 +3,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getEngineers, addEngineer, loginEngineer, updatePassword, updateEngineer } from '../controllers/engineerController.js';
+import { getEngineers, addEngineer, loginEngineer, updatePassword, updateEngineer, deletebyId, getAssignedEngineers } from '../controllers/engineerController.js';
 import { authenticateUser } from '../middleware/authmiddleware.js';
 import { getEngineerById } from '../controllers/engineerController.js';
 
@@ -30,13 +30,19 @@ router.get('/', getEngineers);
 
 // Route to add a new engineer
 router.post('/add', upload.single('photo'), addEngineer);
-
 router.get('/:id', getEngineerById); // Add this line for fetching a specific engineer
 
 router.post("/login", loginEngineer);
 router.put("/updatePassword", authenticateUser, updatePassword);
+router.delete('/:id', deletebyId);
 
 // Route to update engineer details
 router.put('/:id', upload.single('photo'), updateEngineer);
+
+
+// router to show engineer in supervising engineer **********************
+router.get('/engineers/:supervisorId', getAssignedEngineers);
+
+
 
 export default router;
