@@ -64,7 +64,7 @@ const loginSengineer = async (req, res) => {
     res.json({
       success: true,
       token,
-      name: sengineer.name, // You might want to check if 'name' is appropriate
+      name: sengineer.name,
       _id: sengineer._id // Include _id in the response
     });
   } catch (error) {
