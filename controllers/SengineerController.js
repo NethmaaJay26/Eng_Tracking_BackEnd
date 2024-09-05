@@ -1,4 +1,3 @@
-// controllers/SengineerController.js
 import Sengineer from '../models/SengineerModel.js';
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
@@ -65,7 +64,7 @@ const loginSengineer = async (req, res) => {
       success: true,
       token,
       name: sengineer.name,
-      _id: sengineer._id // Include _id in the response
+      _id: sengineer._id
     });
   } catch (error) {
     console.log(error);

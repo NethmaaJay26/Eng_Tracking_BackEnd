@@ -30,7 +30,7 @@ router.get('/', getEngineers);
 
 // Route to add a new engineer
 router.post('/add', upload.single('photo'), addEngineer);
-router.get('/:id', getEngineerById); // Add this line for fetching a specific engineer
+router.get('/:id', getEngineerById); // Add this line for getting a specific engineer
 
 router.post("/login", loginEngineer);
 router.put("/updatePassword", authenticateUser, updatePassword);
@@ -40,7 +40,7 @@ router.delete('/:id', deletebyId);
 router.put('/:id', upload.single('photo'), updateEngineer);
 
 
-// router to show engineer in supervising engineer **********************
+// router to show trainee engineer in supervising engineer
 router.get('/engineers/:supervisorId', getAssignedEngineers);
 
 

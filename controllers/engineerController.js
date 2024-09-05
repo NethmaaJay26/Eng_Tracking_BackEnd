@@ -57,7 +57,7 @@ const getEngineers = async (req, res) => {
   }
 };
 
-//get engineer by id
+//get engineer using id
 const getEngineerById = async (req, res) => {
   try {
     const engineer = await Engineer.findById(req.params.id).populate('supervisingEngineer', 'name');
@@ -72,7 +72,7 @@ const getEngineerById = async (req, res) => {
 };
 
 
-//delete engineer by id
+//delete engineer using id
 const deletebyId =  async (req, res) => {
   try {
     const engineer = await Engineer.findByIdAndDelete(req.params.id);
@@ -118,7 +118,7 @@ const loginEngineer = async (req, res) => {
 // Update password
 const updatePassword = async (req, res) => {
   const { password } = req.body;
-  const userId = req.user._id; // Assuming user ID is retrieved from the token
+  const userId = req.user._id;
 
   try {
       const salt = await bcrypt.genSalt(10);
