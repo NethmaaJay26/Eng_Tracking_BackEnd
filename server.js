@@ -5,6 +5,7 @@ import userRouter from "./routes/userRoute.js";
 import router from "./routes/engineerRoutes.js";
 import sengineerrouter from "./routes/SengineerRoutes.js";
 import trainingrouter from "./routes/trainingRoutes.js";
+import uniRouter from "./routes/unifiedRoutes.js";
 import 'dotenv/config';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -32,6 +33,8 @@ app.use("/api/user", userRouter);
 app.use('/api/engineers', router);
 app.use('/api/sengineers', sengineerrouter);
 app.use('/api/trainings', trainingrouter);
+app.use('/api/unified', uniRouter);
+
 
 
 app.get("/", (req, res) => {
