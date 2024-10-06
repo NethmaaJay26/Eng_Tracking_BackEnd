@@ -2,7 +2,6 @@
 
 import mongoose from 'mongoose';
 
-
 const engineerSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -33,18 +32,20 @@ const engineerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   password: {
     type: String,
-    required : true,
+    required: true,
   },
-
   supervisingEngineer: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Sengineer', // Reference to the Supervising Engineer model
+    ref: 'Sengineer',
+    required: false,
+  },
+  training: {
+    type: mongoose.Schema.Types.ObjectId, // Reference to the Training model
+    ref: 'Training',
     required: false,
   }
-
 });
 
 const Engineer = mongoose.model('Engineer', engineerSchema);

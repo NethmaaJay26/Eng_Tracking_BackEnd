@@ -133,9 +133,9 @@ const updatePassword = async (req, res) => {
   }
 };
 
-// Update engineer
+// Update engineer with training
 const updateEngineer = async (req, res) => {
-  const { name, traineeID, role, email, address, contact, supervisingEngineer } = req.body;
+  const { name, traineeID, role, email, address, contact, supervisingEngineer, training } = req.body; // training is an ObjectId
   const photo = req.file ? req.file.filename : null;
 
   try {
@@ -147,6 +147,7 @@ const updateEngineer = async (req, res) => {
       address,
       contact,
       supervisingEngineer,
+      training, // Store the training ObjectId
       photo
     };
 
@@ -160,6 +161,7 @@ const updateEngineer = async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 };
+
 
 
 const createToken = (id) => {
