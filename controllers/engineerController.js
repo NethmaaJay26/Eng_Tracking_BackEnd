@@ -60,10 +60,14 @@ const getEngineers = async (req, res) => {
 //get engineer using id
 const getEngineerById = async (req, res) => {
   try {
-    const engineer = await Engineer.findById(req.params.id).populate('supervisingEngineer', 'name');
+    const engineer = await Engineer.findById(req.params.id)
+      .populate('supervisingEngineer', 'name')
+      .populate('training', 'name category timePeriod company email'); // Populate training details
+
     if (!engineer) {
       return res.status(404).json({ message: 'Engineer not found' });
     }
+
     res.status(200).json(engineer);
   } catch (err) {
     console.error(err.message);

@@ -31,4 +31,17 @@ const getTrainings = async (req, res) => {
     }
 };
 
-export { addTraining, getTrainings };
+const getTrainingById = async (req, res) => {
+    try {
+      const training = await Training.findById(req.params.id);
+      if (!training) {
+        return res.status(404).json({ message: 'Training not found' });
+      }
+      res.status(200).json(training);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json('Server Error');
+    }
+  };
+
+export { addTraining, getTrainings, getTrainingById };
