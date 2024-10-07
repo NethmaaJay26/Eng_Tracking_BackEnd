@@ -4,7 +4,14 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getSupervisingEngineers, addSupervisingEngineer, loginSengineer } from '../controllers/SengineerController.js'; // Update to match controller
+import { 
+  getSupervisingEngineers, 
+  addSupervisingEngineer, 
+  loginSengineer, 
+  getSupervisingEngineerById, 
+  updateSupervisingEngineer, 
+  deleteSupervisingEngineer 
+} from '../controllers/SengineerController.js';
 
 const sengineerrouter = express.Router();
 
@@ -26,9 +33,19 @@ const upload = multer({ storage: storage });
 // Route to get all supervising engineers
 sengineerrouter.get('/', getSupervisingEngineers); 
 
+// Route to get a single supervising engineer by ID
+sengineerrouter.get('/:id', getSupervisingEngineerById);
+
 // Route to add a new supervising engineer
 sengineerrouter.post('/add', upload.single('photo'), addSupervisingEngineer); 
 
+// Route to update a supervising engineer
+sengineerrouter.put('/:id', upload.single('photo'), updateSupervisingEngineer);
+
+// Route to delete a supervising engineer
+sengineerrouter.delete('/:id', deleteSupervisingEngineer);
+
+// Route to login a supervising engineer
 sengineerrouter.post("/login", loginSengineer);
 
 export default sengineerrouter;
