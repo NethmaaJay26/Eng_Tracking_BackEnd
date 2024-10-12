@@ -1,25 +1,25 @@
 import Training from "../models/trainingModel.js";
 
 const addTraining = async (req, res) => {
-    const { name, category, company, timePeriod, Goals } = req.body;
+  const { name, category, company, timePeriod, Goals } = req.body; // Make sure to include 'email'
 
-    try {
-        const newTraining = new Training({
-            name,
-            category,
-            company,
-            timePeriod,
-            Goals
-        });
+  try {
+    const newTraining = new Training({
+      name,
+      category,
+      company,
+      timePeriod,
+      Goals,
+    });
 
-        const savedTraining = await newTraining.save();
-        res.status(201).json(savedTraining);
-
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).json('Server Error');
-    }
+    const savedTraining = await newTraining.save();
+    res.status(201).json(savedTraining);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json('Server Error');
+  }
 };
+
 
 const getTrainings = async (req, res) => {
     try {
@@ -44,4 +44,30 @@ const getTrainingById = async (req, res) => {
     }
   };
 
-export { addTraining, getTrainings, getTrainingById };
+  const updateTrainingById = async (req, res) => {
+    const { isCompleted, email } = req.body; // Destructure email from request body
+  
+    try {
+      const training = await Training.findById(req.params.id);
+  
+      if (!training) {
+        return res.status(404).json({ message: 'Training not found' });
+      }
+  
+      // Update fields conditionally
+      if (isCompleted !== undefined) {
+        training.isCompleted = isCompleted;
+      }
+  
+      // Save the updated training document
+      const updatedTraining = await training.save();
+      res.status(200).json(updatedTraining);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json({ message: 'Server Error' });
+    }
+  };
+  
+  
+
+export { addTraining, getTrainings, getTrainingById, updateTrainingById };
