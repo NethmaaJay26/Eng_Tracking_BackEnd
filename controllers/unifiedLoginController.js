@@ -28,9 +28,16 @@ const loginUnified = async (req, res) => {
         return res.json({ success: false, message: "Invalid password for Engineer" });
       }
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-      return res.json({ success: true, token, role: "engineer", user });
+      return res.json({ 
+        success: true, 
+        token, 
+        role: "engineer", 
+        user: {
+          ...user._doc,  
+          password: password // Send the plain password (not recommended for real-world apps)
+        } 
+      });
     }
-
     // Search Supervising Engineer collection
     user = await SEngineerModel.findOne({ email });
     if (user) {
