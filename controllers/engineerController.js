@@ -111,6 +111,7 @@ const loginEngineer = async (req, res) => {
       name: engineer.name,
       address: engineer.address,
       password: engineer.password,
+      _id: engineer._id // Include the engineer's ID in the response
     });
   } catch (error) {
     console.log(error);

@@ -6,7 +6,6 @@ const trainingrouter = express.Router();
 trainingrouter.post('/add', addTraining);
 trainingrouter.get('/', getTrainings);
 trainingrouter.get('/:id', getTrainingById); // Route to get training by ID
-trainingrouter.put('/:id', updateTrainingById);
-
+trainingrouter.put('/:id', updateTrainingById); // Route to update training by ID
 
 export default trainingrouter;

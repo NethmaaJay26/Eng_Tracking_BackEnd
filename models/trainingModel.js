@@ -1,4 +1,3 @@
-// models/trainingModel.js
 import mongoose from 'mongoose';
 
 const trainingSchema = new mongoose.Schema({
@@ -21,6 +20,9 @@ const trainingSchema = new mongoose.Schema({
   isCompleted: {
     type: Boolean,
     default: false,
+  },
+  goals: {
+    type: [String], // Goals should be an array of strings
   },
 });
 

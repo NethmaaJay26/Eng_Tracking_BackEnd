@@ -41,11 +41,11 @@ const engineerSchema = new mongoose.Schema({
     ref: 'Sengineer',
     required: false,
   },
-  training: {
+  training: [{
     type: mongoose.Schema.Types.ObjectId, // Reference to the Training model
     ref: 'Training',
     required: false,
-  }
+  }]
 });
 
 const Engineer = mongoose.model('Engineer', engineerSchema);

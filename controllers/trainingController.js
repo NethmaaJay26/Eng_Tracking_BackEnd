@@ -1,7 +1,7 @@
 import Training from "../models/trainingModel.js";
 
 const addTraining = async (req, res) => {
-  const { name, category, company, timePeriod, Goals } = req.body; // Make sure to include 'email'
+  const { name, category, company, timePeriod, goals } = req.body; // Include 'goals'
 
   try {
     const newTraining = new Training({
@@ -9,7 +9,7 @@ const addTraining = async (req, res) => {
       category,
       company,
       timePeriod,
-      Goals,
+      goals, // Save the goals array
     });
 
     const savedTraining = await newTraining.save();
@@ -20,54 +20,55 @@ const addTraining = async (req, res) => {
   }
 };
 
-
 const getTrainings = async (req, res) => {
-    try {
-        const trainings = await Training.find();
-        res.status(200).json(trainings);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).json('Server Error');
-    }
+  try {
+    const trainings = await Training.find();
+    res.status(200).json(trainings);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json('Server Error');
+  }
 };
 
 const getTrainingById = async (req, res) => {
-    try {
-      const training = await Training.findById(req.params.id);
-      if (!training) {
-        return res.status(404).json({ message: 'Training not found' });
-      }
-      res.status(200).json(training);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).json('Server Error');
+  try {
+    const training = await Training.findById(req.params.id);
+    if (!training) {
+      return res.status(404).json({ message: 'Training not found' });
     }
-  };
+    res.status(200).json(training);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json('Server Error');
+  }
+};
 
-  const updateTrainingById = async (req, res) => {
-    const { isCompleted, email } = req.body; // Destructure email from request body
-  
-    try {
-      const training = await Training.findById(req.params.id);
-  
-      if (!training) {
-        return res.status(404).json({ message: 'Training not found' });
-      }
-  
-      // Update fields conditionally
-      if (isCompleted !== undefined) {
-        training.isCompleted = isCompleted;
-      }
-  
-      // Save the updated training document
-      const updatedTraining = await training.save();
-      res.status(200).json(updatedTraining);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).json({ message: 'Server Error' });
+const updateTrainingById = async (req, res) => {
+  const { isCompleted, goals } = req.body; // Include 'goals' in the update request
+
+  try {
+    const training = await Training.findById(req.params.id);
+
+    if (!training) {
+      return res.status(404).json({ message: 'Training not found' });
     }
-  };
-  
-  
+
+    // Update fields conditionally
+    if (isCompleted !== undefined) {
+      training.isCompleted = isCompleted;
+    }
+
+    if (goals !== undefined) {
+      training.goals = goals; // Update goals
+    }
+
+    // Save the updated training document
+    const updatedTraining = await training.save();
+    res.status(200).json(updatedTraining);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
 
 export { addTraining, getTrainings, getTrainingById, updateTrainingById };
