@@ -71,4 +71,35 @@ const updateTrainingById = async (req, res) => {
   }
 };
 
-export { addTraining, getTrainings, getTrainingById, updateTrainingById };
+const updateGoalSubmission = async (req, res) => {
+  const { index, submission } = req.body;
+  const { id } = req.params;
+
+  try {
+    const training = await Training.findById(id);
+
+    if (!training) {
+      return res.status(404).json({ message: 'Training not found' });
+    }
+
+    // Assuming you want to add submission to the goals
+    if (!training.submissions) {
+      training.submissions = []; // Initialize submissions if not present
+    }
+
+    // Ensure submissions array is the same length as goals
+    while (training.submissions.length < training.goals.length) {
+      training.submissions.push(''); // Fill with empty strings for new goals
+    }
+
+    training.submissions[index] = submission; // Update the submission for the specific goal
+
+    const updatedTraining = await training.save();
+    res.status(200).json(updatedTraining);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+export { addTraining, getTrainings, getTrainingById, updateTrainingById, updateGoalSubmission};
