@@ -4,7 +4,7 @@ import mongoose from 'mongoose'; // Add this import statement
 import Engineer from '../models/engineerModel.js';
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
-import validator from "validator"
+import validator from "validator";
 import { response } from "express";
 import Sengineer from '../models/SengineerModel.js';
 
