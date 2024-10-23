@@ -9,7 +9,7 @@ const addTraining = async (req, res) => {
       category,
       company,
       timePeriod,
-      goals, // Save the goals array
+      goals,
     });
 
     const savedTraining = await newTraining.save();
@@ -44,7 +44,7 @@ const getTrainingById = async (req, res) => {
 };
 
 const updateTrainingById = async (req, res) => {
-  const { isCompleted, goals } = req.body; // Include 'goals' in the update request
+  const { isCompleted, goals, marks } = req.body; // Include 'marks' in the update request
 
   try {
     const training = await Training.findById(req.params.id);
@@ -62,7 +62,10 @@ const updateTrainingById = async (req, res) => {
       training.goals = goals; // Update goals
     }
 
-    // Save the updated training document
+    if (marks !== undefined) {
+      training.marks = marks; // Update marks
+    }
+
     const updatedTraining = await training.save();
     res.status(200).json(updatedTraining);
   } catch (err) {

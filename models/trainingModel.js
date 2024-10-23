@@ -33,6 +33,15 @@ const trainingSchema = new mongoose.Schema({
     default: false,
   },
   goals: [goalSchema],  // Use sub-schema for goals
+
+  marks: {
+    type: Number,  // New field for marks
+    min: 0,
+    max: 10,
+    default: null, // Marks are optional initially
+  },
+
+  
 });
 
 const Training = mongoose.model('Training', trainingSchema);
