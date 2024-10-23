@@ -1,5 +1,5 @@
 import express from 'express';
-import { addTraining, getTrainings, getTrainingById, updateTrainingById, updateGoalSubmission, updateGoalStatus, uploadPdfFile } from '../controllers/trainingController.js';
+import { addTraining, getTrainings, getTrainingById, updateTrainingById, updateGoalSubmission, updateGoalStatus, uploadPdfFile, downloadPdfFile} from '../controllers/trainingController.js';
 import multer from 'multer';
 import path from 'path';
 
@@ -35,5 +35,6 @@ trainingrouter.put('/:id', updateTrainingById);
 trainingrouter.put('/:id/goals', updateGoalSubmission);
 trainingrouter.post('/upload-pdf', upload.single('file'), uploadPdfFile);  // Apply multer middleware here
 trainingrouter.put('/:id/goals/status', updateGoalStatus);
+trainingrouter.get('/:id/download-pdf', downloadPdfFile);
 
 export default trainingrouter;

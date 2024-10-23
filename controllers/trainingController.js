@@ -167,5 +167,36 @@ const uploadPdfFile = async (req, res) => {
   }
 };
 
+const downloadPdfFile = async (req, res) => {
+  try {
+    const { id } = req.params; // Training ID from the request
 
-export { addTraining, getTrainings, getTrainingById, updateTrainingById, updateGoalSubmission, updateGoalStatus, uploadPdfFile};
+    // Find the training by ID
+    const training = await Training.findById(id);
+
+    if (!training || !training.pdfFile || !training.pdfFile.url) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    // File path stored in the database
+    const filePath = path.resolve(training.pdfFile.url);
+
+    // Check if file exists on the server
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: 'File not found on server' });
+    }
+
+    // Set the correct headers for file download
+    res.setHeader('Content-Type', training.pdfFile.contentType);
+    res.setHeader('Content-Disposition', `attachment; filename=${path.basename(filePath)}`);
+
+    // Send the file as a response
+    res.sendFile(filePath);
+  } catch (error) {
+    console.error('Error downloading PDF file:', error.message);
+    res.status(500).json({ message: 'Failed to download PDF file' });
+  }
+};
+
+
+export { addTraining, getTrainings, getTrainingById, updateTrainingById, updateGoalSubmission, updateGoalStatus, uploadPdfFile, downloadPdfFile};
