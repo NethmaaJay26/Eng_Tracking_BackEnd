@@ -140,32 +140,37 @@ const updatePassword = async (req, res) => {
 
 // Update engineer with training
 const updateEngineer = async (req, res) => {
-  const { name, traineeID, role, email, address, contact, supervisingEngineer, training } = req.body; // training is an ObjectId
-  const photo = req.file ? req.file.filename : null;
-
+  const { name, traineeID, role, email, address, contact, supervisingEngineer, training } = req.body;
+  
   try {
+    // Fetch the current engineer data to avoid overwriting fields
+    const currentEngineer = await Engineer.findById(req.params.id);
+    
+    if (!currentEngineer) {
+      return res.status(404).json({ message: 'Engineer not found' });
+    }
+
     const updatedData = {
-      name,
-      traineeID,
-      role,
-      email,
-      address,
-      contact,
-      supervisingEngineer,
-      training, // Store the training ObjectId
-      photo
+      name: name || currentEngineer.name,
+      traineeID: traineeID || currentEngineer.traineeID,
+      role: role || currentEngineer.role,
+      email: email || currentEngineer.email,
+      address: address || currentEngineer.address,
+      contact: contact || currentEngineer.contact,
+      supervisingEngineer: supervisingEngineer || currentEngineer.supervisingEngineer,
+      training: training || currentEngineer.training,
+      photo: req.file ? req.file.filename : currentEngineer.photo  // Preserve the old photo if not uploaded
     };
 
     const updatedEngineer = await Engineer.findByIdAndUpdate(req.params.id, updatedData, { new: true });
-    if (!updatedEngineer) {
-      return res.status(404).json({ message: 'Engineer not found' });
-    }
+
     res.status(200).json(updatedEngineer);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: 'Server Error' });
   }
 };
+
 
 
 

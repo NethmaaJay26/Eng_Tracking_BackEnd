@@ -10,7 +10,7 @@ import { getEngineerById } from '../controllers/engineerController.js';
 
 const router = express.Router();
 
-// Determine __dirname equivalent in ES module
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -25,22 +25,18 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Route to get all engineers
 router.get('/', getEngineers);
 
-// Route to add a new engineer
 router.post('/add', upload.single('photo'), addEngineer);
-router.get('/:id', getEngineerById); // Add this line for getting a specific engineer
+router.get('/:id', getEngineerById); 
 
 router.post("/login", loginEngineer);
 router.put("/updatePassword", authenticateUser, updatePassword);
 router.delete('/:id', deletebyId);
 
-// Route to update engineer details
-router.put('/:id', upload.single('photo'), updateEngineer);
+router.patch('/:id', upload.single('photo'), updateEngineer);
 
 
-// router to show trainee engineer in supervising engineer
 router.get('/engineers/:supervisorId', getAssignedEngineers);
 
 
