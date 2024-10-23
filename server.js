@@ -14,13 +14,17 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+import emailRouter from "./routes/emailRoutes.js";
+
 // App config
 const app = express();
 const port = 4000;
 
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:3000", // Adjust this to match your frontend URL
+}));
 
 // Establishing DB connection
 connectDB();
@@ -35,12 +39,14 @@ app.use('/api/sengineers', sengineerrouter);
 app.use('/api/trainings', trainingrouter);
 app.use('/api/unified', uniRouter);
 
-
+app.use("/api/email", emailRouter);
 
 app.get("/", (req, res) => {
     res.send("API Working");
 });
 
+const PORT = process.env.PORT;
 app.listen(port, () => {
     console.log(`Server started on http://localhost:${port}`);
 });
+
