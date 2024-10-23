@@ -1,4 +1,7 @@
 import Training from "../models/trainingModel.js";
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const addTraining = async (req, res) => {
   const { name, category, company, timePeriod, goals } = req.body; // Include 'goals'
@@ -9,7 +12,7 @@ const addTraining = async (req, res) => {
       category,
       company,
       timePeriod,
-      goals, // Save the goals array
+      goals,
     });
 
     const savedTraining = await newTraining.save();
@@ -44,7 +47,7 @@ const getTrainingById = async (req, res) => {
 };
 
 const updateTrainingById = async (req, res) => {
-  const { isCompleted, goals } = req.body; // Include 'goals' in the update request
+  const { isCompleted, goals, marks } = req.body; // Include 'marks' in the update request
 
   try {
     const training = await Training.findById(req.params.id);
@@ -62,7 +65,10 @@ const updateTrainingById = async (req, res) => {
       training.goals = goals; // Update goals
     }
 
-    // Save the updated training document
+    if (marks !== undefined) {
+      training.marks = marks; // Update marks
+    }
+
     const updatedTraining = await training.save();
     res.status(200).json(updatedTraining);
   } catch (err) {
@@ -127,4 +133,70 @@ const updateGoalStatus = async (req, res) => {
   }
 };
 
-export { addTraining, getTrainings, getTrainingById, updateTrainingById, updateGoalSubmission, updateGoalStatus};
+const uploadPdfFile = async (req, res) => {
+  // Debugging log to check if file and body are received
+  console.log('File:', req.file);
+  console.log('Body:', req.body);
+
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file provided' });
+  }
+
+  try {
+    const { trainingId } = req.body;
+
+    // Find the training by ID
+    const training = await Training.findById(trainingId);
+    if (!training) {
+      // Delete the uploaded file if the training document is not found
+      fs.unlinkSync(req.file.path);
+      return res.status(404).json({ message: 'Training not found' });
+    }
+
+    // Update the training document with the file information
+    training.pdfFile = {
+      url: req.file.path,       // Save the file path (or URL if using cloud storage)
+      contentType: req.file.mimetype,  // Save the content type (e.g., 'application/pdf')
+    };
+
+    const updatedTraining = await training.save();
+    res.status(200).json({ message: 'File uploaded successfully', training: updatedTraining });
+  } catch (error) {
+    console.error('Error saving PDF file:', error.message);
+    res.status(500).json({ message: 'Failed to save PDF file' });
+  }
+};
+
+const downloadPdfFile = async (req, res) => {
+  try {
+    const { id } = req.params; // Training ID from the request
+
+    // Find the training by ID
+    const training = await Training.findById(id);
+
+    if (!training || !training.pdfFile || !training.pdfFile.url) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    // File path stored in the database
+    const filePath = path.resolve(training.pdfFile.url);
+
+    // Check if file exists on the server
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: 'File not found on server' });
+    }
+
+    // Set the correct headers for file download
+    res.setHeader('Content-Type', training.pdfFile.contentType);
+    res.setHeader('Content-Disposition', `attachment; filename=${path.basename(filePath)}`);
+
+    // Send the file as a response
+    res.sendFile(filePath);
+  } catch (error) {
+    console.error('Error downloading PDF file:', error.message);
+    res.status(500).json({ message: 'Failed to download PDF file' });
+  }
+};
+
+
+export { addTraining, getTrainings, getTrainingById, updateTrainingById, updateGoalSubmission, updateGoalStatus, uploadPdfFile, downloadPdfFile};
