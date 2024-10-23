@@ -1,4 +1,7 @@
 import Training from "../models/trainingModel.js";
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const addTraining = async (req, res) => {
   const { name, category, company, timePeriod, goals } = req.body; // Include 'goals'
@@ -130,4 +133,39 @@ const updateGoalStatus = async (req, res) => {
   }
 };
 
-export { addTraining, getTrainings, getTrainingById, updateTrainingById, updateGoalSubmission, updateGoalStatus};
+const uploadPdfFile = async (req, res) => {
+  // Debugging log to check if file and body are received
+  console.log('File:', req.file);
+  console.log('Body:', req.body);
+
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file provided' });
+  }
+
+  try {
+    const { trainingId } = req.body;
+
+    // Find the training by ID
+    const training = await Training.findById(trainingId);
+    if (!training) {
+      // Delete the uploaded file if the training document is not found
+      fs.unlinkSync(req.file.path);
+      return res.status(404).json({ message: 'Training not found' });
+    }
+
+    // Update the training document with the file information
+    training.pdfFile = {
+      url: req.file.path,       // Save the file path (or URL if using cloud storage)
+      contentType: req.file.mimetype,  // Save the content type (e.g., 'application/pdf')
+    };
+
+    const updatedTraining = await training.save();
+    res.status(200).json({ message: 'File uploaded successfully', training: updatedTraining });
+  } catch (error) {
+    console.error('Error saving PDF file:', error.message);
+    res.status(500).json({ message: 'Failed to save PDF file' });
+  }
+};
+
+
+export { addTraining, getTrainings, getTrainingById, updateTrainingById, updateGoalSubmission, updateGoalStatus, uploadPdfFile};
