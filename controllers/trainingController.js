@@ -102,4 +102,29 @@ const updateGoalSubmission = async (req, res) => {
   }
 };
 
-export { addTraining, getTrainings, getTrainingById, updateTrainingById, updateGoalSubmission};
+const updateGoalStatus = async (req, res) => {
+  const { goalIndex, isCompleted } = req.body;  // Get goal index and completion status from request body
+  const { id } = req.params;  // Training ID from the request URL
+
+  try {
+    const training = await Training.findById(id);
+
+    if (!training) {
+      return res.status(404).json({ message: 'Training not found' });
+    }
+
+    if (goalIndex >= 0 && goalIndex < training.goals.length) {
+      training.goals[goalIndex].isCompleted = isCompleted;  // Update goal status
+    } else {
+      return res.status(400).json({ message: 'Invalid goal index' });
+    }
+
+    const updatedTraining = await training.save();
+    res.status(200).json(updatedTraining);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+export { addTraining, getTrainings, getTrainingById, updateTrainingById, updateGoalSubmission, updateGoalStatus};

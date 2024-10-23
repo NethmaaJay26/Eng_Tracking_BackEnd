@@ -1,5 +1,16 @@
 import mongoose from 'mongoose';
 
+const goalSchema = new mongoose.Schema({
+  goal: {
+    type: String,
+    required: true,
+  },
+  isCompleted: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 const trainingSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -21,9 +32,7 @@ const trainingSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  goals: {
-    type: [String], // Goals should be an array of strings
-  },
+  goals: [goalSchema],  // Use sub-schema for goals
 });
 
 const Training = mongoose.model('Training', trainingSchema);
